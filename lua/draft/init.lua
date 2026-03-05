@@ -43,9 +43,9 @@ function M.setup(opts)
 		}
 	)
 
-	vim.api.nvim_create_autocmd({ "FileType", "BufEnter" }, {
+	vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "WinEnter" }, {
 		group = draft_gr,
-		pattern = "draft",
+		pattern = { "draft", "*.draft" },
 		callback = function()
 			setup_local_options()
 			setup_keymap()
