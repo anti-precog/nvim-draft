@@ -22,12 +22,22 @@ end
 
 local draft_gr = vim.api.nvim_create_augroup("draft", { clear = true })
 
-local hl = require("draft.highlight")
-
 function M.setup(opts)
 	opts = opts or {}
+	--[[ HACK:
+	vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+		pattern = "*.draft",
+		callback = function()
+			vim.bo.filetype = "draft"
+			print("Filetype set to draft")
+		end,
+	})
+	]]
+	--
 
 	local nav = require("draft.navigation")
+	local decorator = require("draft.decorator")
+
 	-- control indent in lines
 	-- PERF: Select only necessary events for autocmd
 	vim.api.nvim_create_autocmd(
@@ -36,29 +46,19 @@ function M.setup(opts)
 			group = draft_gr,
 			pattern = "*.draft",
 			callback = function(args)
-				hl.update_indent(args.buf)
+				decorator.render(args.buf)
 			end,
 			desc = "Redraw indents",
 		}
 	)
 
-	-- HACK:
-	vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-		pattern = "*.draft",
-		callback = function()
-			vim.bo.filetype = "draft"
-			-- print("Filetype ustawiony na draft")
-		end,
-	})
-
 	vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "BufLeave" }, {
 		group = draft_gr,
 		pattern = { "draft", "*.draft" },
-		callback = function()
+		callback = function(args)
 			print("jestem w " .. vim.bo.filetype)
 			setup_local_options()
 			setup_keymap()
-			hl.update_syntax()
 			nav.activate_commands()
 		end,
 		desc = "Load draw settings",
@@ -66,10 +66,8 @@ function M.setup(opts)
 
 	vim.api.nvim_create_autocmd("ColorScheme", {
 		group = draft_gr,
-		callback = function()
-			if vim.bo.filetype == "draft" then
-				hl.update_syntax()
-			end
+		callback = function(args)
+			decorator.render(args.buf)
 		end,
 		desc = "Add special highlight for quotes",
 	})
