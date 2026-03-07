@@ -20,6 +20,7 @@ Install the plugin with lazy package manager:
 ```lua
 {
 	"anti-precog/draft.nvim",
+    opts = {},
     ft = "draft"
 }
 ```
