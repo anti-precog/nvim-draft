@@ -12,14 +12,14 @@ local function get_page(filename)
 	return tonumber(filename:match("(%d+)"))
 end
 
-local function open_page(filename, num)
+local function load_page(filename, num)
 	local full_path = get_dir() .. "/" .. filename:gsub("(%d+)", tostring(num), 1)
 	vim.cmd("argadd " .. full_path)
 	vim.cmd("edit " .. full_path)
 	print("Loaded file: " .. full_path)
 end
 
-vim.api.nvim_create_user_command("SelectPage", function()
+local function select_page()
 	local num = tonumber(vim.fn.input("number: "))
 	vim.cmd("redraw!")
 	if not num then
@@ -27,24 +27,20 @@ vim.api.nvim_create_user_command("SelectPage", function()
 		return
 	end
 	filename = get_filename()
-	open_page(filename, num)
-end, {
-	desc = "Create or open a file with selected number",
-})
+	load_page(filename, num)
+end
 
-vim.api.nvim_create_user_command("NextPage", function()
+local function turn_page()
 	filename = get_filename()
 	page_num = get_page(filename)
 	if not page_num then
 		print("No page number")
 		return
 	end
-	open_page(filename, page_num + 1)
-end, {
-	desc = "Go to next page",
-})
+	load_page(filename, page_num + 1)
+end
 
-vim.api.nvim_create_user_command("PrevPage", function()
+local function return_page()
 	filename = get_filename()
 	page_num = get_page(filename)
 	if not page_num then
@@ -54,9 +50,27 @@ vim.api.nvim_create_user_command("PrevPage", function()
 		print("You are on zero page")
 		return
 	end
-	open_page(filename, page_num - 1)
-end, {
-	desc = "Go to prev page",
-})
+	load_page(filename, page_num - 1)
+end
+
+function M.activate_commands()
+	vim.api.nvim_buf_create_user_command(0, "SelectPage", function()
+		select_page()
+	end, {
+		desc = "Create or open a file with selected number",
+	})
+
+	vim.api.nvim_buf_create_user_command(0, "NextPage", function()
+		turn_page()
+	end, {
+		desc = "Go to next page",
+	})
+
+	vim.api.nvim_buf_create_user_command(0, "PrevPage", function()
+		return_page()
+	end, {
+		desc = "Go to prev page",
+	})
+end
 
 return M

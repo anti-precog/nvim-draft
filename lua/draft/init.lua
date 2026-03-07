@@ -18,10 +18,6 @@ local function setup_keymap()
 
 	vim.keymap.set("i", "-", "—", { buffer = true })
 	vim.keymap.set("i", "=", "–", { buffer = true })
-
-	vim.api.nvim_set_keymap("n", "N", ":NextPage<CR>", { noremap = true, silent = true })
-	vim.api.nvim_set_keymap("n", "P", ":PrevPage<CR>", { noremap = true, silent = true })
-	vim.api.nvim_set_keymap("n", "S", ":SelectPage<CR>", { noremap = true, silent = true })
 end
 
 local draft_gr = vim.api.nvim_create_augroup("draft", { clear = true })
@@ -46,13 +42,24 @@ function M.setup(opts)
 		}
 	)
 
-	vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "WinEnter" }, {
+	-- HACK:
+	vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+		pattern = "*.draft",
+		callback = function()
+			vim.bo.filetype = "draft"
+			-- print("Filetype ustawiony na draft")
+		end,
+	})
+
+	vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "BufLeave" }, {
 		group = draft_gr,
 		pattern = { "draft", "*.draft" },
 		callback = function()
+			print("jestem w " .. vim.bo.filetype)
 			setup_local_options()
 			setup_keymap()
 			hl.update_syntax()
+			nav.activate_commands()
 		end,
 		desc = "Load draw settings",
 	})
