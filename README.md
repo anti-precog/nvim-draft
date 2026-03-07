@@ -20,8 +20,12 @@ Install the plugin with lazy package manager:
 ```lua
 {
 	"anti-precog/draft.nvim",
-    lazy = true,
-    ft = "draft"
+    ft = "draft",
+    keys = {
+		{ "S", "<cmd>SelectPage<cr>", desc = "Open selected file" },
+		{ "P", "<cmd>Page<cr>", desc = "Open pref file" },
+		{ "N", "<cmd>NextPage<cr>", desc = "Open next file" }
+	}
 }
 ```
 ## Requirements
@@ -35,3 +39,12 @@ vim.filetype.add({
 	},
 })
 ```
+
+## Navigation
+
+You can fast jumps between your chapters, scenes or pages if the files have number in it.
+
+### Commands
+ - SelectPage - jump to file by number
+ - NextPage/PrefPage - open existed or create new file with according number
+

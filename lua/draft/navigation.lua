@@ -1,36 +1,9 @@
 local M = {}
 
--- TODO: Refactor/Optimize
-function open_page(direction)
-	direction = direction or 1
-	local current_file = vim.fn.expand("%:t")
-	local current_dir = vim.fn.expand("%:p:h")
-
-	if current_file == "" then
-		print("There is no this part")
-		return
-	end
-
-	local new_file = current_file:gsub("(%d+)", function(n)
-		local new_num = tonumber(n) + direction
-		if new_num < 0 then
-			new_num = 0
-		end
-		return tostring(new_num)
-	end, 1)
-
-	local full_path = current_dir .. "/" .. new_file
-
-	vim.cmd("argadd " .. full_path)
-	vim.cmd("edit " .. full_path)
-
-	print("Utworzono / przeszedł do pliku: " .. full_path)
-end
-
 local function get_number()
 	local filename = vim.fn.expand("%:t") -- np. "23-scene.draft"
-	local num = filename:match("(%d+)") -- "23" jako string
-	num = tonumber(num) -- konwertuj na liczbę
+	local num = filename:match("(%d+)") -- "23" as string
+	num = tonumber(num) -- convert to number
 	return num
 end
 
@@ -47,15 +20,16 @@ local function go_to_page(num)
 	print("Loaded file: " .. target_file)
 end
 
-vim.api.nvim_create_user_command("GotoPage", function(opts)
-	local num = tonumber(opts.args)
+vim.api.nvim_create_user_command("SelectPage", function()
+	-- local num = tonumber(opts.args)
+	local num = vim.fn.input("number: ")
 	if not num then
 		print("Give correct number of file.")
 		return
 	end
+	vim.cmd("redraw!")
 	go_to_page(num)
 end, {
-	nargs = 1,
 	desc = "Create or open a file with selected number",
 })
 

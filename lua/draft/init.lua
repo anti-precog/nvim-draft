@@ -7,8 +7,6 @@ local function setup_local_options()
 	vim.opt_local.breakindent = true
 end
 
-local config = require("draft.commands")
-
 local function setup_keymap()
 	-- moves along "visual" lines, no on real ones
 	vim.keymap.set("n", "j", function()
@@ -20,15 +18,6 @@ local function setup_keymap()
 
 	vim.keymap.set("i", "-", "—", { buffer = true })
 	vim.keymap.set("i", "=", "–", { buffer = true })
-
-	vim.api.nvim_set_keymap("n", "N", ":NextPage<CR>", { noremap = true, silent = true }) -- następny
-	vim.api.nvim_set_keymap("n", "P", ":PrevPage<CR>", { noremap = true, silent = true }) -- poprzedni
-	vim.api.nvim_set_keymap(
-		"n",
-		"S",
-		':lua GoToFileNumber(tonumber(vim.fn.input("Numer pliku: ")))<CR>',
-		{ noremap = true, silent = true }
-	)
 end
 
 local draft_gr = vim.api.nvim_create_augroup("draft", { clear = true })
@@ -38,6 +27,7 @@ local hl = require("draft.highlight")
 function M.setup(opts)
 	opts = opts or {}
 
+	local nav = require("draft.navigation")
 	-- control indent in lines
 	-- PERF: Select only necessary events for autocmd
 	vim.api.nvim_create_autocmd(
