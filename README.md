@@ -1,25 +1,37 @@
-# nvim-draw 
+# draft.nvim
 
 **nvim-draw** is a lua plugin for Neovim to improve the experience of writing prose.
+
+> [!WARNING]  
+> Project is still in early stage of development.
 
 ## Features
 - file extension "draft" 
 - **highlight** for dialogs, quotes, headers and comments
-- autoreplace for dash '–'  and em-dash '—'
+- autorepleace for dash '–'  and em-dash '—'
 - fast jumping between files (chapters/scenes/parts)
 
 ## Installation
 
-Install the plugin with your preferred package manager:
+Install the plugin with lazy package manager:
 
 ### [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
 {
-	"anti-precog/nvim-draft",
-	opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-    }
+	"anti-precog/draft.nvim",
+    lazy = true,
+    ft = "draft"
 }
+```
+## Requirements
+
+For proper lazy loading, it’s best to add the creation of the draft file type in your neovim configuration:
+
+```lua
+vim.filetype.add({
+	extension = {
+		draft = "draft",
+	},
+})
 ```
