@@ -1,51 +1,52 @@
 local M = {}
 
-local function get_number()
-	local filename = vim.fn.expand("%:t") -- np. "23-scene.draft"
-	local num = filename:match("(%d+)") -- "23" as string
-	num = tonumber(num) -- convert to number
-	return num
+local function get_dir()
+	return vim.fn.expand("%:p:h")
 end
 
-local function go_to_page(num)
-	local current_file = vim.fn.expand("%:t")
-	local current_dir = vim.fn.expand("%:p:h")
+local function get_filename()
+	return vim.fn.expand("%:t")
+end
 
-	local target_file = current_file:gsub("(%d+)", tostring(num), 1)
-	local full_path = current_dir .. "/" .. target_file
+local function get_page(filename)
+	return tonumber(filename:match("(%d+)"))
+end
 
+local function open_page(filename, num)
+	local full_path = get_dir() .. "/" .. filename:gsub("(%d+)", tostring(num), 1)
 	vim.cmd("argadd " .. full_path)
 	vim.cmd("edit " .. full_path)
-
-	print("Loaded file: " .. target_file)
+	print("Loaded file: " .. full_path)
 end
 
 vim.api.nvim_create_user_command("SelectPage", function()
-	-- local num = tonumber(opts.args)
 	local num = tonumber(vim.fn.input("number: "))
 	vim.cmd("redraw!")
 	if not num then
 		print("Give correct number of file.")
 		return
 	end
-	go_to_page(num)
+	filename = get_filename()
+	open_page(filename, num)
 end, {
 	desc = "Create or open a file with selected number",
 })
 
 vim.api.nvim_create_user_command("NextPage", function()
-	page_num = get_number()
+	filename = get_filename()
+	page_num = get_page(filename)
 	if not page_num then
 		print("No page number")
 		return
 	end
-	go_to_page(page_num + 1)
+	open_page(filename, page_num + 1)
 end, {
 	desc = "Go to next page",
 })
 
 vim.api.nvim_create_user_command("PrevPage", function()
-	page_num = get_number()
+	filename = get_filename()
+	page_num = get_page(filename)
 	if not page_num then
 		print("No page number")
 		return
@@ -53,7 +54,7 @@ vim.api.nvim_create_user_command("PrevPage", function()
 		print("You are on zero page")
 		return
 	end
-	go_to_page(page_num - 1)
+	open_page(filename, page_num - 1)
 end, {
 	desc = "Go to prev page",
 })
