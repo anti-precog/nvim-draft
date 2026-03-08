@@ -1,7 +1,11 @@
+---@module "draft.decorator"
 local M = {}
 
 local draft_ns = vim.api.nvim_create_namespace("draft")
 
+---@param buf string
+---@param line_nr number
+---@param length number
 local function make_indent(buf, line_nr, length)
 	local space = string.rep(" ", length)
 	vim.api.nvim_buf_set_extmark(buf, draft_ns, line_nr - 1, 0, {
@@ -11,20 +15,30 @@ local function make_indent(buf, line_nr, length)
 	})
 end
 
+---@param line string
+---@return boolean
 local function is_comment(line)
 	return line:match("^\t.*")
 end
 
+---@param line string
+---@return boolean
 local function is_header(line)
 	return line:match("^[A-Z].*[^.]$")
 end
 
+---@param hl_group string
+---@param buf string
+---@param line_nr number
+---@param start number | nil
+---@param stop number | nil
 local function decore_as(hl_group, buf, line_nr, start, stop)
 	start = start or 0
 	stop = stop or -1
 	vim.api.nvim_buf_add_highlight(buf, draft_ns, hl_group, line_nr - 1, start, stop)
 end
 
+---@param buf string
 function M.render(buf)
 	vim.api.nvim_buf_clear_namespace(buf, draft_ns, 0, -1)
 	-- vim.api.nvim_set_hl(0, "Quote", { italic = true })

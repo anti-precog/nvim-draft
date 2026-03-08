@@ -1,3 +1,4 @@
+---@module "draft"
 local M = {}
 
 local function setup_local_options()
@@ -22,6 +23,7 @@ end
 
 local draft_gr = vim.api.nvim_create_augroup("draft", { clear = true })
 
+---@param opts table
 function M.setup(opts)
 	opts = opts or {}
 	--[[ HACK:
@@ -55,7 +57,7 @@ function M.setup(opts)
 	vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "BufLeave" }, {
 		group = draft_gr,
 		pattern = { "draft", "*.draft" },
-		callback = function(args)
+		callback = function()
 			print("jestem w " .. vim.bo.filetype)
 			setup_local_options()
 			setup_keymap()

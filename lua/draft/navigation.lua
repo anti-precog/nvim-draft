@@ -1,17 +1,24 @@
+---@module "draft.navigator"
 local M = {}
 
+---@return string
 local function get_dir()
 	return vim.fn.expand("%:p:h")
 end
 
+---@return string
 local function get_filename()
 	return vim.fn.expand("%:t")
 end
 
+---@param filename string
+---@return number?
 local function get_page(filename)
 	return tonumber(filename:match("(%d+)"))
 end
 
+---@param filename string
+---@param num number
 local function load_page(filename, num)
 	local full_path = get_dir() .. "/" .. filename:gsub("(%d+)", tostring(num), 1)
 	vim.cmd("argadd " .. full_path)
@@ -26,13 +33,13 @@ local function select_page()
 		print("Give correct number of file.")
 		return
 	end
-	filename = get_filename()
+	local filename = get_filename()
 	load_page(filename, num)
 end
 
 local function turn_page()
-	filename = get_filename()
-	page_num = get_page(filename)
+	local filename = get_filename()
+	local page_num = get_page(filename)
 	if not page_num then
 		print("No page number")
 		return
@@ -41,8 +48,8 @@ local function turn_page()
 end
 
 local function return_page()
-	filename = get_filename()
-	page_num = get_page(filename)
+	local filename = get_filename()
+	local page_num = get_page(filename)
 	if not page_num then
 		print("No page number")
 		return
