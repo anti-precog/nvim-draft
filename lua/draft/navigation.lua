@@ -1,4 +1,4 @@
----@module "draft.navigator"
+---@module "navigator"
 local M = {}
 
 ---@return string

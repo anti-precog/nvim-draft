@@ -1,30 +1,9 @@
 ---@module "draft"
 local M = {}
 
-local function setup_local_options()
-	vim.opt_local.tabstop = 8
-	vim.opt_local.shiftwidth = 8
-	vim.opt_local.wrap = true
-	vim.opt_local.breakindent = true
-end
-
-local function setup_keymap()
-	-- moves along "visual" lines, no on real ones
-	vim.keymap.set("n", "j", function()
-		return vim.v.count == 0 and "gj" or "j"
-	end, { expr = true })
-	vim.keymap.set("n", "k", function()
-		return vim.v.count == 0 and "gk" or "k"
-	end, { expr = true })
-
-	vim.keymap.set("i", "-", "—", { buffer = true })
-	vim.keymap.set("i", "=", "–", { buffer = true })
-end
-
-local draft_gr = vim.api.nvim_create_augroup("draft", { clear = true })
-
 ---@param opts table
 function M.setup(opts)
+	local draft_gr = vim.api.nvim_create_augroup("draft", { clear = true })
 	opts = opts or {}
 	--[[ HACK:
 	vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
@@ -37,6 +16,7 @@ function M.setup(opts)
 	]]
 	--
 
+	local core = require("draft.core")
 	local nav = require("draft.navigation")
 	local decorator = require("draft.decorator")
 
@@ -59,8 +39,8 @@ function M.setup(opts)
 		pattern = { "draft", "*.draft" },
 		callback = function()
 			print("jestem w " .. vim.bo.filetype)
-			setup_local_options()
-			setup_keymap()
+			core.setup()
+			core.set_visual_move()
 			nav.activate_commands()
 		end,
 		desc = "Load draw settings",

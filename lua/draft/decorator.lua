@@ -1,4 +1,4 @@
----@module "draft.decorator"
+---@module "decorator"
 local M = {}
 
 local draft_ns = vim.api.nvim_create_namespace("draft")
