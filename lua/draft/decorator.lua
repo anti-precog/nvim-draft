@@ -68,11 +68,11 @@ vim.api.nvim_set_decoration_provider(ns, {
 		if cursor_line == row then
 			draw_counter[row] = (draw_counter[row] or 0) + 1
 			vim.api.nvim_buf_clear_namespace(bufnr, -1, row, row + 1)
-			local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1] or ""
+			local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1]
 			if is_comment(line) then
-				decore_as("NonText", bufnr, row)
+				decore_as("NonText", bufnr, row, 0, #line)
 			else
-				decore_as("Normal", bufnr, row)
+				-- decore_as("Normal", bufnr, row)
 				vim.api.nvim_buf_set_extmark(bufnr, ns, row, 0, {
 					virt_text = { { "->" .. draw_counter[row] .. " ", "NonText" } },
 					virt_text_pos = "inline",
@@ -87,17 +87,18 @@ vim.api.nvim_set_decoration_provider(ns, {
 				local pos = 1
 
 				while pos <= line_len do
-					local s, e = line:find("—", pos, true)
+					local s, e = line:find("—", pos, true) -- pierwsz pałza
 					if not s then
 						break
 					end
 
-					local next_s, next_e = line:find("—", e + 1, true)
+					local next_s, next_e = line:find("—", e + 1, true) -- dugia pałza
 					if next_s then
 						decore_as("Statement", bufnr, row, s - 1, next_e)
 						pos = next_e + 1
 					else
-						decore_as("Statement", bufnr, row, s - 1)
+						-- jeśli nie ma drugiej pałzy
+						decore_as("Statement", bufnr, row, s - 1, line_len)
 						break
 					end
 				end
