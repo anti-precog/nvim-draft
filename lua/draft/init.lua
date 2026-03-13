@@ -18,18 +18,6 @@ function M.setup(opts)
 		desc = "load draft.core settings",
 	})
 
-	local decorator = require("draft.decorator")
-	vim.api.nvim_create_autocmd({ "BufEnter", "FileType", "TextChanged", "TextChangedI", "ColorScheme" }, {
-		group = draft_gr,
-		-- NOTE: *.draft -> (BufEnter/TextChanged/TextChangedI) draft -> (FileType/ColorScheme)
-		-- WARNING: decorator not working for new added text in only draft filetypes (*.draft extension is needed)
-		pattern = { "draft", "*.draft" },
-		callback = function(args)
-			decorator.render(args.buf, 4)
-		end,
-		desc = "decorate draft buffer",
-	})
-
 	local nav = require("draft.navigator")
 	vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
 		group = draft_gr,
@@ -37,6 +25,17 @@ function M.setup(opts)
 		pattern = { "draft", "*.draft" },
 		callback = function()
 			nav.activate_commands()
+		end,
+		desc = "activate drafts navigator",
+	})
+
+	local decorator = require("draft.decorator")
+	vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
+		group = draft_gr,
+		-- NOTE: *.draft -> (BufEnter) draft -> (FileType)
+		pattern = { "draft", "*.draft" },
+		callback = function(args)
+			decorator.render(args.buf, 4)
 		end,
 		desc = "activate drafts navigator",
 	})
