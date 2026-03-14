@@ -107,10 +107,11 @@ local first_load = true
 vim.api.nvim_set_decoration_provider(ns, {
 
 	on_line = function(_, win_id, buf_nr, row_nr)
-		if first_load or not is_cursor_in_row(win_id, row_nr) then
-			return false
+		local cursor_line = vim.api.nvim_win_get_cursor(win_id)[1] - 1
+
+		if cursor_line == row_nr then
+			decore_row(buf_nr, row_nr)
 		end
-		decore_row(buf_nr, row_nr)
 	end,
 	on_end = function()
 		first_load = false
