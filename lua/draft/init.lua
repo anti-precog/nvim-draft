@@ -28,17 +28,7 @@ function M.setup(opts)
 		end,
 		desc = "activate drafts navigator",
 	})
-
 	local decorator = require("draft.decorator")
-	vim.api.nvim_create_autocmd({ "BufEnter", "FileType" }, {
-		group = draft_gr,
-		-- NOTE: *.draft -> (BufEnter) draft -> (FileType)
-		pattern = { "draft", "*.draft" },
-		callback = function(args)
-			decorator.render(args.buf, 4)
-		end,
-		desc = "activate drafts navigator",
-	})
 end
 
 return M
