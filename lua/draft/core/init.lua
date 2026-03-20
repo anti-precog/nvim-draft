@@ -21,6 +21,9 @@ function M.setup(opts)
 		if config.auto_repleace_symbols.dash then
 			table.insert(features, auto_repleace.set_dash_key)
 		end
+		if config.auto_repleace_symbols.smart_quotes then
+			table.insert(features, auto_repleace.set_smart_quotes)
+		end
 	end
 
 	local group = vim.api.nvim_create_augroup("draft-core", { clear = true })

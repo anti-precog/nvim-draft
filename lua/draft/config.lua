@@ -12,7 +12,7 @@ local validator = require("draft.validator")
 ---@field center table<string, boolean>|nil
 local defaults = {
 	-- all loaded features works only fot that filetypes
-	filetypes = { "draft", "text" },
+	filetypes = { "draft" },
 
 	-- select how to recognize dialogues as em-dash or en-dash
 	dash = "—",
@@ -28,7 +28,7 @@ local defaults = {
 	-- nil - disable that repleacment
 	auto_repleace_symbols = {
 		dash = "--", -- used to mark dialogues
-		-- TODO: smart_apostrophe = false|true
+		smart_quotes = '"', -- curly quotes („”)
 		-- TODO: external custom signs
 	},
 
@@ -38,13 +38,13 @@ local defaults = {
 
 	-- [[ DECORATOR module options ]]
 	-- set indent size for all paragraph
-	indent = 4, -- set to 0 to disable
+	indent = 2, -- set to 0 to disable
 
 	-- use accessible highlight-groups to syntax specific section
 	-- nil - disable syntax
 	syntax = {
-		dialogue = "Statement",
-		--quote = "Statement",
+		dialogue = "Quotes",
+		quote = "Quotes",
 		comment = "NonText",
 		header = "Title",
 	},
@@ -90,7 +90,7 @@ function M.setup(opts)
 	end
 
 	if
-		validator.is_positive(M.options.indent) == true
+		validator.is_positive(M.options.indent)
 		or validator.has_values(M.options.syntax)
 		or validator.has_values(M.options.center)
 	then
