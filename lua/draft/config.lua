@@ -43,8 +43,8 @@ local defaults = {
 	-- use accessible highlight-groups to syntax specific section
 	-- nil - disable syntax
 	syntax = {
-		dialogue = "Quotes",
-		quote = "Quotes",
+		dialogue = "Statement",
+		quote = "Statement",
 		comment = "NonText",
 		header = "Title",
 	},
