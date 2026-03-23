@@ -1,4 +1,5 @@
 local function check_nvim_version()
+	vim.health.start("draft requirements")
 	local v = vim.version()
 	if v.major == 0 and v.minor >= 10 and v.patch >= 0 then
 		vim.health.ok("neovim version >= 0.10.0")
@@ -11,9 +12,29 @@ local function is_defined_filetype(ft)
 	return vim.tbl_contains(vim.fn.getcompletion("", "filetype"), ft)
 end
 
-local valid = require("draft.validator")
 local options = require("draft.config").options
 
+local function check_hl_groups_config()
+	vim.health.start("associated highlight groups")
+	local typo = options.typography
+	local groups = {
+		quotes = typo.quote_hl,
+		comments = typo.comment_hl,
+		headers = typo.header_hl,
+		dialogues = typo.dialogue_hl,
+	}
+
+	for section, group in pairs(groups) do -- why not working?
+		if vim.fn.hlexists(group) then
+			vim.health.ok(group .. " for " .. section)
+		else
+			vim.health.warn(
+				group .. " for " .. section,
+				"Define this group in your nvim config or remove from plugin configurtion."
+			)
+		end
+	end
+end
 local function check_filetypes_config()
 	vim.health.start("associated filetypes")
 	local filetypes = options.filetypes
@@ -33,36 +54,16 @@ local function check_filetypes_config()
 	end
 end
 
-local function check_loaded(name)
+local function check_status(name)
 	if package.loaded[name] then
-		vim.health.ok(name .. " loaded")
-	else
 		vim.health.info(name)
 	end
 end
 
 local M = {}
 M.check = function()
-	check_loaded("draft")
-	check_loaded("draft.core")
-	check_loaded("draft.core.auto_repleace")
-	check_loaded("draft.core.visual_move_keys")
-
-	check_loaded("draft.decorator")
-	check_loaded("draft.decorator.line")
-	check_loaded("draft.decorator.paragrapher")
-	check_loaded("draft.decorator.headliner")
-	check_loaded("draft.decorator.hl_comment")
-	check_loaded("draft.decorator.hl_dialogue")
-	check_loaded("draft.decorator.hl_quote")
-	check_loaded("draft.decorator.indenter")
-
-	check_loaded("draft.paginator")
-	check_loaded("draft.paginator.commands")
-
-	vim.health.start("draft requirements")
 	check_nvim_version()
-	vim.health.start("draft configuration")
 	check_filetypes_config()
+	check_hl_groups_config()
 end
 return M

@@ -1,7 +1,8 @@
-local config = require("draft.config").options
+local opt = require("draft.config").options
+local config = opt.typography
 local ns = require("draft.config").namespace
 
-local line = require("draft.decorator.line")
+local line = require("draft.typography.line")
 
 ---@return boolean
 local is_insert_mode = function()
@@ -50,7 +51,7 @@ function M.try_make_title()
 	end
 	if is_header() then
 		make_center()
-		vim.api.nvim_buf_add_highlight(line.buf, ns, config.syntax.header, line.row, 0, #line.text)
+		vim.api.nvim_buf_add_highlight(line.buf, ns, config.header_hl, line.row, 0, #line.text)
 		return false
 	end
 	return true
@@ -74,11 +75,11 @@ function M.try_hl_header()
 		return true
 	end
 	if is_header() then
-		if config.indent > 0 then
-			require("draft.decorator.indenter").make_indent()
+		if config.indent_size > 0 then
+			require("draft.typography.indenter").make_indent()
 		end
 
-		vim.api.nvim_buf_add_highlight(line.buf, ns, config.syntax.header, line.row, 0, #line.text)
+		vim.api.nvim_buf_add_highlight(line.buf, ns, config.header_hl, line.row, 0, #line.text)
 		return false
 	end
 	return true
@@ -89,7 +90,7 @@ function M.try_remake_title()
 	if is_header() then
 		clear_line()
 		make_center()
-		vim.api.nvim_buf_add_highlight(line.buf, ns, config.syntax.header, line.row, 0, #line.text)
+		vim.api.nvim_buf_add_highlight(line.buf, ns, config.header_hl, line.row, 0, #line.text)
 		return false
 	end
 	return true
@@ -110,11 +111,11 @@ function M.try_rehl_header()
 	if is_header() then
 		clear_line()
 
-		if config.indent > 0 then
-			require("draft.decorator.indenter").make_indent()
+		if config.indent_size > 0 then
+			require("draft.typography.indenter").make_indent()
 		end
 
-		vim.api.nvim_buf_add_highlight(line.buf, ns, config.syntax.header, line.row, 0, #line.text)
+		vim.api.nvim_buf_add_highlight(line.buf, ns, config.header_hl, line.row, 0, #line.text)
 		return false
 	end
 	return true

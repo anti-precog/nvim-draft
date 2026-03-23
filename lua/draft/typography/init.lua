@@ -1,6 +1,7 @@
 ---@type table
 local config = require("draft.config").options
 local ns = require("draft.config").namespace
+local typo = config.typography
 
 local paragrapher
 
@@ -47,7 +48,7 @@ end
 local M = {}
 
 function M.setup()
-	paragrapher = require("draft.decorator.paragrapher").setup()
+	paragrapher = require("draft.typography.paragrapher").setup()
 
 	vim.api.nvim_set_decoration_provider(ns, {
 
@@ -84,7 +85,7 @@ function M.setup()
 			end
 		end,
 	})
-	if next(config.center) ~= nil then
+	if typo.center_asterix or typo.center_header then
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = config.filetypes,
 			callback = function(args)

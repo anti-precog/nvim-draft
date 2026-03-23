@@ -62,9 +62,9 @@ Proposed (out of box) setup:
 		require("draft").setup({
             -- your configuration comes here
             -- refer to the configuration section below
-			syntax = {
-				quote = "Italic",
-				dialogue = "Italic",
+			typography = {
+		        quote_hl = "Italic",
+		        dialogue_hl = "Italic",
 			},
 		})
 	end,
@@ -76,47 +76,37 @@ Proposed (out of box) setup:
 Defualt options:
 
 ```lua
- {
+{
 	-- all loaded features works only fot that filetypes
-	filetypes = { "draft" },
+	filetypes = {
+		"draft",
+		"text",
+	},
 
 	-- select how to recognize dialogues as em-dash or en-dash
-	dash = "—",
+	dash_symbol = "em-dash",
 
-	-- improved moved on features
-	-- true - navigating [j/k] through the file ignore line wraping
-	-- false - disable that feature
-	move_by_visual_lines = true,
-
-	-- emdahs(—) and dash(–) can be auto replace by selected phraze
-	-- it can be symbol one even characters string
-	-- nil - disable that repleacment
-	auto_repleace_symbols = {
-		dash = "--", -- used to mark dialogues
-		smart_quotes = '"', -- curly quotes („”)
+	-- [[ CORE module options ]]
+	core = {
+		move_by_visual_lines = true,
+		smart_quotes = true,
+		repleace_dash = "--",
 	},
 
-	-- load paginator feature
+	-- [[ TYPOGRAPHY module options ]]
+	typography = {
+		indent_size = 2,
+		center_header = true,
+		center_asterix = true,
+		dialogue_hl = "Statement",
+		quote_hl = "Statement",
+		comment_hl = "NonText",
+		header_hl = "Title",
+	},
+
+	-- [[ PAGINATOR module options ]]
 	paginator = false,
 
-	-- set indent size for all paragraph
-	indent = 2, -- set to 0 to disable
-
-	-- use accessible highlight-groups to syntax specific section
-	-- nil - disable syntax
-	syntax = {
-		dialogue = "Statement",
-		quote = "Statement",
-		comment = "NonText",
-		header = "Title",
-	},
-
-	-- center selected sections
-	-- nil - leave default indent
-	center = {
-		header = false,
-		asterix = true,
-	},
 }
 ```
 

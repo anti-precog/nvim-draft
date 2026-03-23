@@ -1,29 +1,22 @@
 local config = require("draft.config").options
+local core = config.core
 
--- a basic features module
+-- a core features module
 ---@class core
 local M = {}
 
 -- init module
----@param opts options|nil
 ---@return core
-function M.setup(opts)
-	if opts then
-		config = require("draft.config").setup(opts).options
+function M.setup()
+	local active_features = {}
+	if core.move_by_visual_lines then
+		table.insert(active_features, require("draft.core.visual_move_keys").setup)
 	end
-
-	local features = {}
-	if config.move_by_visual_lines then
-		table.insert(features, require("draft.core.visual_move_keys").setup)
+	if core.repleace_dash then
+		table.insert(active_features, require("draft.core.auto_repleace").set_dash_key)
 	end
-	if config.auto_repleace_symbols then
-		local auto_repleace = require("draft.core.auto_repleace")
-		if config.auto_repleace_symbols.dash then
-			table.insert(features, auto_repleace.set_dash_key)
-		end
-		if config.auto_repleace_symbols.smart_quotes then
-			table.insert(features, auto_repleace.set_smart_quotes)
-		end
+	if core.smart_quotes then
+		table.insert(active_features, require("draft.core.auto_repleace").set_smart_quotes)
 	end
 
 	local group = vim.api.nvim_create_augroup("draft-core", { clear = true })
@@ -31,11 +24,11 @@ function M.setup(opts)
 		group = group,
 		pattern = config.filetypes,
 		callback = function()
-			for _, func in ipairs(features) do
+			for _, func in ipairs(active_features) do
 				func()
 			end
 		end,
-		desc = "load draft.core settings",
+		desc = "load draft.core improvements",
 	})
 	return M
 end

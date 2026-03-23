@@ -1,121 +1,97 @@
-local validator = require("draft.validator")
-
 -- plugin options for each module
 ---@class options
 ---@field filetypes string[]
----@field dash string
----@field move_by_visual_lines boolean
----@field auto_repleace_symbols table<string, string|boolean>|nil
+---@field dash_symbol string
 ---@field paginator boolean
----@field indent number
----@field syntax table<string, string>|nil
----@field center table<string, boolean>|nil
+---@field improvements table
+---@field typography table
 local defaults = {
 	-- all loaded features works only fot that filetypes
-	filetypes = { "draft", "text" },
+	filetypes = {
+		"draft",
+		"text",
+	},
 
 	-- select how to recognize dialogues as em-dash or en-dash
-	--dash = "—",
-	dash = "—",
+	dash_symbol = "em-dash",
 
 	-- [[ CORE module options ]]
-	-- improved moved on features
-	-- true - navigating [j/k] through the file ignore line wraping
-	-- false - disable that feature
-	move_by_visual_lines = true,
+	core = {
+		move_by_visual_lines = true,
+		smart_quotes = true,
+		repleace_dash = "--",
+	},
 
-	-- emdahs(—) and dash(–) can be auto replace by selected phraze
-	-- it can be symbol one even characters string
-	-- nil - disable that repleacment
-	auto_repleace_symbols = {
-		dash = "--", -- used to mark dialogues
-		smart_quotes = '"', -- curly quotes („”)
-		-- TODO: external custom signs
+	-- [[ TYPOGRAPHY module options ]]
+	typography = {
+		indent_size = 2,
+		center_header = true,
+		center_asterix = true,
+		dialogue_hl = "Statement",
+		quote_hl = "Statement",
+		comment_hl = "NonText",
+		header_hl = "Title",
 	},
 
 	-- [[ PAGINATOR module options ]]
-	-- load paginator feature
 	paginator = false,
-
-	-- [[ DECORATOR module options ]]
-	-- set indent size for all paragraph
-	indent = 2, -- set to 0 to disable
-
-	-- use accessible highlight-groups to syntax specific section
-	-- nil - disable syntax
-	syntax = {
-		dialogue = "Statement",
-		quote = "Statement",
-		comment = "NonText",
-		header = "Title",
-	},
-
-	-- center selected sections
-	-- nil - leave default indent
-	center = {
-		header = false,
-		asterix = true,
-	},
 }
 
 ---@class config
 local M = {}
 
----@type number
-M.namespace = vim.api.nvim_create_namespace("draft")
-
 ---@type options
 M.options = defaults
 
----@class moduleChecker
----@field core boolean
----@field paginator boolean
----@field decorator boolean
-M.valid = {
-	core = false,
-	paginator = false,
-	decorator = false,
-}
-
-local function init_options(opts)
-	M.options = vim.tbl_deep_extend("force", defaults, opts or {})
-end
-
-local function init_validation()
-	assert(type(M.options.filetypes) == "table", "filetypes - wrong type")
-	assert(type(M.options.dash) == "string", "dash - wrong type")
-	assert(type(M.options.move_by_visual_lines) == "boolean", "move_by_visaul_lines - wrong type")
-	assert(type(M.options.auto_repleace_symbols) == "table", "auto_repleace_symbols - wrong type")
-	assert(type(M.options.paginator) == "boolean", "pagginator - wrong type")
-	assert(type(M.options.indent) == "number", "indent - wrong type")
-	assert(type(M.options.syntax) == "table", "syntax wrong type")
-	assert(type(M.options.center) == "table", "center wrong type")
-
-	assert(M.options.dash ~= "", "dash symbol can not be empty")
-end
+---@type number
+M.namespace = vim.api.nvim_create_namespace("draft")
 
 ---@param opts options
 ---@return config
 function M.setup(opts)
-	init_options(opts)
-	init_validation()
+	opts = opts or {}
 
-	if M.options.move_by_visual_lines == true or validator.has_values(M.options.auto_repleace_symbols) then
-		M.valid.core = true
+	vim.validate({
+		filetypes = { opts.filetypes, "table", true },
+		dash_symbol = {
+			opts.dash_symbol,
+			function(v)
+				return type(v) == "string" and (v == "em-dash" or v == "en-dash")
+			end,
+			true,
+		},
+		core = { opts.core, { "table, boolean" }, true },
+		typography = { opts.typography, { "table", "boolean" }, true },
+		paginator = { opts.paginator, "boolean", true },
+	})
+
+	M.options = vim.tbl_deep_extend("force", defaults, opts)
+
+	if type(M.options.core) == "table" then
+		vim.validate({
+			move_by_visual_lines = { M.options.core.move_by_visual_lines, "boolean", false },
+			smart_quotes = { M.options.core.smart_quotes, "boolean", false },
+			repleace_dash = { M.options.core.repleace_dash, { "string", "boolean" }, false },
+		})
 	end
 
-	if M.options.paginator == true then
-		M.valid.paginator = true
+	if type(M.options.typography) == "table" then
+		vim.validate({
+			indent_size = { M.options.typography.indent_size, "number", false },
+			center_header = { M.options.typography.center_header, "boolean", false },
+			center_asterix = { M.options.typography.center_asterix, "boolean", false },
+			dialogue_hl = { M.options.typography.dialogue_hl, { "string", "boolean" }, false },
+			quote_hl = { M.options.typography.quote_hl, { "string", "boolean" }, false },
+			comment_hl = { M.options.typography.comment_hl, { "string", "boolean" }, false },
+			header_hl = { M.options.typography.header_hl, { "string", "boolean" }, false },
+		})
 	end
 
-	if
-		validator.is_positive(M.options.indent)
-		or validator.has_values(M.options.syntax)
-		or validator.has_values(M.options.center)
-	then
-		M.valid.decorator = true
+	if M.options.dash_symbol == "em-dash" then
+		M.options.dash_symbol = "—"
+	elseif M.options.dash_symbol == "en-dash" then
+		M.options.dash_symbol = "–"
 	end
-
 	return M
 end
 

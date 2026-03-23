@@ -1,10 +1,9 @@
-local indent_size = require("draft.config").options.indent
+local typo = require("draft.config").options.typography
 local ns = require("draft.config").namespace
-
-local line = require("draft.decorator.line")
+local line = require("draft.typography.line")
 
 ---@return string
-local indent = string.rep(" ", indent_size)
+local indent = string.rep(" ", typo.indent_size)
 
 -- a submodule to make indents
 ---@class indenter
