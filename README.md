@@ -4,6 +4,7 @@
 
 > [!WARNING]  
 > Project is still in early stage of development.
+<img width="1192" height="930" alt="Image" src="https://github.com/user-attachments/assets/8b29467b-bea8-4b2e-b2e3-ae0dd95f4c5a" />
 
 ## Idea
 
