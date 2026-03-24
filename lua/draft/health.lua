@@ -8,46 +8,47 @@ local function check_nvim_version()
 	end
 end
 
-local function is_defined_filetype(ft)
-	return vim.tbl_contains(vim.fn.getcompletion("", "filetype"), ft)
+local function is_defined_filetype(filetype)
+	return vim.tbl_contains(vim.fn.getcompletion("", "filetype"), filetype)
 end
 
-local options = require("draft.config").options
+local config = require("draft.config").configuration
 
 local function check_hl_groups_config()
 	vim.health.start("associated highlight groups")
-	local typo = options.typography
-	local groups = {
-		quotes = typo.quote_hl,
-		comments = typo.comment_hl,
-		headers = typo.header_hl,
-		dialogues = typo.dialogue_hl,
+	local typo_config = config.typography
+	local hl_groups = {
+		quotes = typo_config.quote_hl,
+		comments = typo_config.comment_hl,
+		headers = typo_config.header_hl,
+		dialogues = typo_config.dialogue_hl,
 	}
 
-	for section, group in pairs(groups) do -- why not working?
-		if vim.fn.hlexists(group) then
-			vim.health.ok(group .. " for " .. section)
+	for section, gr_name in pairs(hl_groups) do -- why not working?
+		if vim.fn.hlexists(gr_name) then
+			vim.health.ok(gr_name .. " for " .. section)
 		else
 			vim.health.warn(
-				group .. " for " .. section,
+				gr_name .. " for " .. section,
 				"Define this group in your nvim config or remove from plugin configurtion."
 			)
 		end
 	end
 end
+
 local function check_filetypes_config()
 	vim.health.start("associated filetypes")
-	local filetypes = options.filetypes
-	if not next(filetypes) then
+	local filetypes_config = config.filetypes
+	if not next(filetypes_config) then
 		vim.health.error("any filetype associated with plugin", "Fix configuration")
 		return
 	end
-	for _, ft in ipairs(filetypes) do
-		if is_defined_filetype(ft) then
-			vim.health.ok(ft)
+	for _, ft_name in ipairs(filetypes_config) do
+		if is_defined_filetype(ft_name) then
+			vim.health.ok(ft_name)
 		else
 			vim.health.warn(
-				ft .. " - no defined",
+				ft_name .. " - no defined",
 				"Define this type in your nvim config or remove from plugin configurtion."
 			)
 		end

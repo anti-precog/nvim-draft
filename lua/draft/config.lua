@@ -1,5 +1,5 @@
--- plugin options for each module
----@class options
+-- plugin Config for each module
+---@class Config
 ---@field filetypes string[]
 ---@field dash_symbol string
 ---@field paginator boolean
@@ -9,23 +9,22 @@ local defaults = {
 	-- all loaded features works only fot that filetypes
 	filetypes = {
 		"draft",
-		"text",
 	},
 
 	-- select how to recognize dialogues as em-dash or en-dash
 	dash_symbol = "em-dash",
 
-	-- [[ CORE module options ]]
+	-- [[ CORE module conifguration ]]
 	core = {
 		move_by_visual_lines = true,
 		smart_quotes = true,
 		repleace_dash = "--",
 	},
 
-	-- [[ TYPOGRAPHY module options ]]
+	-- [[ TYPOGRAPHY module configuration ]]
 	typography = {
-		indent_size = 2,
-		center_header = true,
+		indent_size = 4,
+		center_header = false,
 		center_asterix = true,
 		dialogue_hl = "Statement",
 		quote_hl = "Statement",
@@ -33,24 +32,11 @@ local defaults = {
 		header_hl = "Title",
 	},
 
-	-- [[ PAGINATOR module options ]]
+	-- [[ PAGINATOR module configuration ]]
 	paginator = false,
 }
 
----@class config
-local M = {}
-
----@type options
-M.options = defaults
-
----@type number
-M.namespace = vim.api.nvim_create_namespace("draft")
-
----@param opts options
----@return config
-function M.setup(opts)
-	opts = opts or {}
-
+local function pre_validate(opts)
 	vim.validate({
 		filetypes = { opts.filetypes, "table", true },
 		dash_symbol = {
@@ -64,34 +50,60 @@ function M.setup(opts)
 		typography = { opts.typography, { "table", "boolean" }, true },
 		paginator = { opts.paginator, "boolean", true },
 	})
+end
 
-	M.options = vim.tbl_deep_extend("force", defaults, opts)
+---@class ConfigModule
+local M = {}
 
-	if type(M.options.core) == "table" then
+---@type Config
+M.configuration = defaults
+
+local function post_validate()
+	if type(M.configuration.core) == "table" then
 		vim.validate({
-			move_by_visual_lines = { M.options.core.move_by_visual_lines, "boolean", false },
-			smart_quotes = { M.options.core.smart_quotes, "boolean", false },
-			repleace_dash = { M.options.core.repleace_dash, { "string", "boolean" }, false },
+			move_by_visual_lines = { M.configuration.core.move_by_visual_lines, "boolean", false },
+			smart_quotes = { M.configuration.core.smart_quotes, "boolean", false },
+			repleace_dash = { M.configuration.core.repleace_dash, { "string", "boolean" }, false },
 		})
 	end
 
-	if type(M.options.typography) == "table" then
+	if type(M.configuration.typography) == "table" then
 		vim.validate({
-			indent_size = { M.options.typography.indent_size, "number", false },
-			center_header = { M.options.typography.center_header, "boolean", false },
-			center_asterix = { M.options.typography.center_asterix, "boolean", false },
-			dialogue_hl = { M.options.typography.dialogue_hl, { "string", "boolean" }, false },
-			quote_hl = { M.options.typography.quote_hl, { "string", "boolean" }, false },
-			comment_hl = { M.options.typography.comment_hl, { "string", "boolean" }, false },
-			header_hl = { M.options.typography.header_hl, { "string", "boolean" }, false },
+			indent_size = { M.configuration.typography.indent_size, "number", false },
+			center_header = { M.configuration.typography.center_header, "boolean", false },
+			center_asterix = { M.configuration.typography.center_asterix, "boolean", false },
+			dialogue_hl = { M.configuration.typography.dialogue_hl, { "string", "boolean" }, false },
+			quote_hl = { M.configuration.typography.quote_hl, { "string", "boolean" }, false },
+			comment_hl = { M.configuration.typography.comment_hl, { "string", "boolean" }, false },
+			header_hl = { M.configuration.typography.header_hl, { "string", "boolean" }, false },
 		})
 	end
+end
 
-	if M.options.dash_symbol == "em-dash" then
-		M.options.dash_symbol = "—"
-	elseif M.options.dash_symbol == "en-dash" then
-		M.options.dash_symbol = "–"
+local function concat_with_defaults(opts)
+	M.configuration = vim.tbl_deep_extend("force", defaults, opts)
+end
+
+local function repleace_dash()
+	if M.configuration.dash_symbol == "em-dash" then
+		M.configuration.dash_symbol = "—"
+	elseif M.configuration.dash_symbol == "en-dash" then
+		M.configuration.dash_symbol = "–"
 	end
+end
+---@type number
+M.namespace = vim.api.nvim_create_namespace("draft")
+
+---@param opts Config
+---@return ConfigModule
+function M.setup(opts)
+	opts = opts or {}
+
+	pre_validate(opts)
+	concat_with_defaults(opts)
+	post_validate()
+	repleace_dash()
+
 	return M
 end
 

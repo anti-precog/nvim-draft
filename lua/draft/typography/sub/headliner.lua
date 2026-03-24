@@ -1,8 +1,8 @@
-local opt = require("draft.config").options
-local config = opt.typography
+local opt = require("draft.config").configuration
+local typo_config = opt.typography
 local ns = require("draft.config").namespace
 
-local line = require("draft.typography.line")
+local selected_line = require("draft.typography.line")
 
 ---@return boolean
 local is_insert_mode = function()
@@ -11,23 +11,23 @@ end
 
 ---@return boolean
 local function is_asterix()
-	return line.text:match("^%*+$")
+	return selected_line.text:match("^%*+$")
 end
 
 ---@return boolean
 local function is_header()
-	return line.text:match("^[A-Z].*[^.]$")
+	return selected_line.text:match("^[A-Z].*[^.]$")
 end
 
 local function make_center()
-	local win_half = vim.api.nvim_win_get_width(line.win) / 2 - 1
-	local line_half = #line.text / 2
+	local win_half = vim.api.nvim_win_get_width(selected_line.win) / 2 - 1
+	local line_half = #selected_line.text / 2
 	local length = win_half - line_half
 	if length <= 0 then
 		return
 	end
 	local space = string.rep(" ", length)
-	vim.api.nvim_buf_set_extmark(line.buf, ns, line.row, 0, {
+	vim.api.nvim_buf_set_extmark(selected_line.buf, ns, selected_line.row, 0, {
 		--virt_text = { { space .. draw_counter[row_nr] .. " ", "NonText" } }, -- debug
 		virt_text = { { space, "NonText" } },
 		virt_text_pos = "inline",
@@ -37,11 +37,11 @@ end
 
 ---@return boolean
 local function clear_line()
-	vim.api.nvim_buf_clear_namespace(line.buf, ns, line.row, line.row + 1)
+	vim.api.nvim_buf_clear_namespace(selected_line.buf, ns, selected_line.row, selected_line.row + 1)
 	return true
 end
 
----@class paragrapher
+---@class HeadlinerSubmodule
 local M = {}
 
 ---@return boolean
@@ -51,7 +51,14 @@ function M.try_make_title()
 	end
 	if is_header() then
 		make_center()
-		vim.api.nvim_buf_add_highlight(line.buf, ns, config.header_hl, line.row, 0, #line.text)
+		vim.api.nvim_buf_add_highlight(
+			selected_line.buf,
+			ns,
+			typo_config.header_hl,
+			selected_line.row,
+			0,
+			#selected_line.text
+		)
 		return false
 	end
 	return true
@@ -75,11 +82,18 @@ function M.try_hl_header()
 		return true
 	end
 	if is_header() then
-		if config.indent_size > 0 then
-			require("draft.typography.indenter").make_indent()
+		if typo_config.indent_size > 0 then
+			require("draft.typography.sub.indenter").make_indent()
 		end
 
-		vim.api.nvim_buf_add_highlight(line.buf, ns, config.header_hl, line.row, 0, #line.text)
+		vim.api.nvim_buf_add_highlight(
+			selected_line.buf,
+			ns,
+			typo_config.header_hl,
+			selected_line.row,
+			0,
+			#selected_line.text
+		)
 		return false
 	end
 	return true
@@ -90,7 +104,14 @@ function M.try_remake_title()
 	if is_header() then
 		clear_line()
 		make_center()
-		vim.api.nvim_buf_add_highlight(line.buf, ns, config.header_hl, line.row, 0, #line.text)
+		vim.api.nvim_buf_add_highlight(
+			selected_line.buf,
+			ns,
+			typo_config.header_hl,
+			selected_line.row,
+			0,
+			#selected_line.text
+		)
 		return false
 	end
 	return true
@@ -111,11 +132,18 @@ function M.try_rehl_header()
 	if is_header() then
 		clear_line()
 
-		if config.indent_size > 0 then
+		if typo_config.indent_size > 0 then
 			require("draft.typography.indenter").make_indent()
 		end
 
-		vim.api.nvim_buf_add_highlight(line.buf, ns, config.header_hl, line.row, 0, #line.text)
+		vim.api.nvim_buf_add_highlight(
+			selected_line.buf,
+			ns,
+			typo_config.header_hl,
+			selected_line.row,
+			0,
+			#selected_line.text
+		)
 		return false
 	end
 	return true

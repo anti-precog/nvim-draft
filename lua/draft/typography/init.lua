@@ -1,9 +1,7 @@
----@type table
-local config = require("draft.config").options
+local config = require("draft.config").configuration
 local ns = require("draft.config").namespace
-local typo = config.typography
 
-local paragrapher
+local decorator
 
 ---@return boolean
 local is_insert_mode = function()
@@ -13,9 +11,9 @@ end
 ---@param buf_nr number
 ---@return boolean
 local function is_correct_ft(buf_nr)
-	local ft = vim.bo[buf_nr].filetype
-	for _, t in ipairs(config.filetypes) do
-		if ft == t then
+	local current_ft = vim.bo[buf_nr].filetype
+	for _, ft in ipairs(config.filetypes) do
+		if current_ft == ft then
 			return true
 		end
 	end
@@ -37,18 +35,19 @@ local function set_post_CR_decore(buf_nr)
 		if cursor_line_nr >= 0 then
 			local text = get_line_text(buf_nr, cursor_line_nr)
 
-			paragrapher.set_line(win_id, buf_nr, cursor_line_nr, text)
-			paragrapher.post_run()
+			decorator.set_line(win_id, buf_nr, cursor_line_nr, text)
+			decorator.post_run()
 		end
 		return vim.api.nvim_replace_termcodes("<CR>", true, false, true)
 	end, { buffer = buf_nr, expr = true, noremap = true, silent = true })
 end
 
----@module "decorator"
+---@class TypographyModule
 local M = {}
 
 function M.setup()
-	paragrapher = require("draft.typography.paragrapher").setup()
+	local typo_config = config.typography
+	decorator = require("draft.typography.decorator").setup()
 
 	vim.api.nvim_set_decoration_provider(ns, {
 
@@ -67,8 +66,8 @@ function M.setup()
 			for i, text in ipairs(lines) do
 				local row_nr = toprow + i - 1
 				--draw_counter[row_nr] = (draw_counter[row_nr] or 0) + 1 -- debug
-				paragrapher.set_line(win_id, buf_nr, row_nr, text)
-				paragrapher.run(false)
+				decorator.set_line(win_id, buf_nr, row_nr, text)
+				decorator.run(false)
 			end
 			return false
 		end,
@@ -80,12 +79,12 @@ function M.setup()
 				--draw_counter[row_nr] = (draw_counter[row_nr] or 0) + 1 -- debug
 				local text = get_line_text(buf_nr, row_nr)
 
-				paragrapher.set_line(win_id, buf_nr, row_nr, text)
-				paragrapher.run(true)
+				decorator.set_line(win_id, buf_nr, row_nr, text)
+				decorator.run(true)
 			end
 		end,
 	})
-	if typo.center_asterix or typo.center_header then
+	if typo_config.center_asterix or typo_config.center_header then
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = config.filetypes,
 			callback = function(args)

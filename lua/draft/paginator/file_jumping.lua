@@ -57,11 +57,11 @@ local function return_page()
 end
 
 -- a submodule adding commands
----@class commands
+---@class FileJumpingSubmodule
 local M = {}
 
 -- init
-function M.setup()
+function M.commands()
 	vim.api.nvim_buf_create_user_command(0, "SelectPage", function()
 		select_page()
 	end, {

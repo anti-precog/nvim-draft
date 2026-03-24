@@ -1,19 +1,18 @@
-local opt = require("draft.config").options
+local config = require("draft.config").configuration
 
 -- a module for quickly jumping through files in the project
----@class paginator
+---@class PaginatorModule
 local M = {}
 
--- init module
----@return paginator
+---@return PaginatorModule
 function M.setup()
 	local group = vim.api.nvim_create_augroup("draft-nav", { clear = true })
 
 	vim.api.nvim_create_autocmd({ "FileType" }, {
 		group = group,
-		pattern = opt.filetypes,
+		pattern = config.filetypes,
 		callback = function()
-			require("draft.paginator.commands").setup()
+			require("draft.paginator.file_jumping").commands()
 		end,
 		desc = "activate drafts navigator",
 	})

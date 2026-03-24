@@ -1,7 +1,7 @@
 -- Current decorated line
 -- win and buf point where line is in nvim
 -- number of row point it in document
----@class line
+---@class LineInfo
 ---@field win integer|nil	refers to nvim window id
 ---@field buf integer|nil	refers to nvim buffer id
 ---@field row integer|nil	number of row
