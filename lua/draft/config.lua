@@ -1,6 +1,5 @@
 -- plugin Config for each module
 ---@class Config
----@field filetypes string[]
 ---@field dash_symbol string
 ---@field paginator boolean
 ---@field improvements table
@@ -33,7 +32,6 @@ local defaults = {
 
 local function pre_validate(opts)
 	vim.validate({
-		filetypes = { opts.filetypes, "table", true },
 		dash_symbol = {
 			opts.dash_symbol,
 			function(v)

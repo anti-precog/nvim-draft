@@ -49,9 +49,6 @@ Proposed (out of box) setup:
 {
 	"anti-precog/draft.nvim",
 	ft = "draft",
-	init = function()
-		require("draft").init_filetype()
-	end,
 	config = function()
 		-- add new highlight group
 		vim.api.nvim_set_hl(0, "Italic", { italic = true })

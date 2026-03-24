@@ -36,22 +36,15 @@ local function check_hl_groups_config()
 	end
 end
 
-local function check_filetypes_config()
-	vim.health.start("associated filetypes")
-	local filetypes_config = config.filetypes
-	if not next(filetypes_config) then
-		vim.health.error("any filetype associated with plugin", "Fix configuration")
-		return
-	end
-	for _, ft_name in ipairs(filetypes_config) do
-		if is_defined_filetype(ft_name) then
-			vim.health.ok(ft_name)
-		else
-			vim.health.warn(
-				ft_name .. " - no defined",
-				"Define this type in your nvim config or remove from plugin configurtion."
-			)
-		end
+local function check_draft_filetype()
+	vim.health.start("associated filetype")
+	if is_defined_filetype("draft") then
+		vim.health.ok("filetype draft defined")
+	else
+		vim.health.warn(
+			"filetype draft no defined",
+			"Define this type in your nvim configuration or use draft.init_filetype()."
+		)
 	end
 end
 
@@ -64,7 +57,7 @@ end
 local M = {}
 M.check = function()
 	check_nvim_version()
-	check_filetypes_config()
+	check_draft_filetype()
 	check_hl_groups_config()
 end
 return M
