@@ -7,7 +7,7 @@ local utils = require("draft.utils")
 ---@param buf_id integer Buffer handle
 ---@return boolean status Is buffer filetype draft
 local function is_draft_type(buf_id)
-	return "draft" ~= vim.bo[buf_id].filetype
+	return "draft" == vim.bo[buf_id].filetype
 end
 
 ---@param buf_id integer Buffer handle
@@ -66,7 +66,7 @@ function M.setup()
 	vim.api.nvim_set_decoration_provider(global.namespace, {
 
 		on_win = function(_, win_id, buf_id, top_row_id, bottom_row_id)
-			if is_draft_type(buf_id) then
+			if not is_draft_type(buf_id) then
 				return false -- stop
 			end
 
