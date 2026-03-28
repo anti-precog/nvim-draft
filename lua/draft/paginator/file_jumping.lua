@@ -1,23 +1,23 @@
----@return string
+---@return string name Name of actual file directory
 local function get_dir()
 	return vim.fn.expand("%:p:h")
 end
 
----@return string
+---@return string name Name of actual file
 local function get_filename()
 	return vim.fn.expand("%:t")
 end
 
----@param filename string
----@return number?
+---@param filename string Name of file
+---@return number? page_number Number from filename
 local function get_page(filename)
 	return tonumber(filename:match("(%d+)"))
 end
 
----@param filename string
----@param num number
-local function load_page(filename, num)
-	local full_path = get_dir() .. "/" .. filename:gsub("(%d+)", tostring(num), 1)
+---@param filename string Name of file
+---@param number number Number for filename
+local function load_page(filename, number)
+	local full_path = get_dir() .. "/" .. filename:gsub("(%d+)", tostring(number), 1)
 	vim.cmd("argadd " .. full_path)
 	vim.cmd("edit " .. full_path)
 end
@@ -56,11 +56,11 @@ local function return_page()
 	load_page(filename, page_num - 1)
 end
 
--- a submodule adding commands
+-- A submodule adding commands
 ---@class FileJumpingSubmodule
 local M = {}
 
--- init
+-- Init navigation commmands
 function M.commands()
 	vim.api.nvim_buf_create_user_command(0, "SelectPage", function()
 		select_page()

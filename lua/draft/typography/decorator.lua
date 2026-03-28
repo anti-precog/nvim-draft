@@ -68,7 +68,7 @@ function M.post_run()
 	end
 end
 
--- init decorator
+-- Init decorator
 ---@return Decorator
 function M.init()
 	---@type TypographyConfig

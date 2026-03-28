@@ -1,16 +1,18 @@
+---@type CoreConfig
 local core_config = require("draft.config").configuration.core
 
 local active_features = {}
 
-local function set_activate(func)
-	table.insert(active_features, func)
+---@param feature fun() Add feature to activate
+local function set_activate(feature)
+	table.insert(active_features, feature)
 end
 
 -- a core features module
 ---@class CoreModule
 local M = {}
 
--- init module
+-- Init module
 ---@return CoreModule
 function M.setup()
 	if core_config.move_by_visual_lines then

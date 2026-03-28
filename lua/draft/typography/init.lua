@@ -59,7 +59,7 @@ end
 ---@class TypographyModule Setup for decoration_provider and post CR text formating
 local M = {}
 
--- init module
+-- Init module
 function M.setup()
 	decorator = require("draft.typography.decorator").init()
 

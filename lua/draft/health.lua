@@ -8,10 +8,7 @@ local function check_nvim_version()
 	end
 end
 
-local function is_defined_filetype(filetype)
-	return vim.tbl_contains(vim.fn.getcompletion("", "filetype"), filetype)
-end
-
+---@type Config
 local config = require("draft.config").configuration
 
 local function check_hl_groups_config()
@@ -36,19 +33,9 @@ local function check_hl_groups_config()
 	end
 end
 
-local function check_draft_filetype()
-	vim.health.start("associated filetype")
-	if is_defined_filetype("draft") then
-		vim.health.ok("filetype draft defined")
-	else
-		vim.health.warn("filetype draft no defined")
-	end
-end
-
 local M = {}
 M.check = function()
 	check_nvim_version()
-	check_draft_filetype()
 	check_hl_groups_config()
 end
 return M

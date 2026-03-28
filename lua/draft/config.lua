@@ -8,6 +8,7 @@ local defaults = {
 	dash_symbol = "em-dash",
 
 	-- Configuration for core module
+	---@class CoreConfig
 	core = {
 		move_by_visual_lines = true,
 		smart_quotes = true,

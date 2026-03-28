@@ -1,7 +1,8 @@
--- a module for quickly jumping through files in the project
+-- A module for quickly jumping through files in the project
 ---@class PaginatorModule
 local M = {}
 
+-- Init module
 ---@return PaginatorModule
 function M.setup()
 	local group = vim.api.nvim_create_augroup("draft-nav", { clear = true })

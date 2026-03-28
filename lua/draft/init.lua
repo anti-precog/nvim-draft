@@ -1,7 +1,8 @@
+-- Main moduel
 ---@class Draft
 local draft = {}
 
----@param opts table
+---@param opts table Options configured by user
 function draft.setup(opts)
 	local config = require("draft.config").setup(opts).configuration
 

@@ -1,13 +1,15 @@
--- a submodule for repleacement nvim keys (j/k) to move on visual not real lines
+-- A submodule for repleacement nvim keys (j/k) to move on visual not real lines
 ---@class VisualMoveKeysSubmodule
 local M = {}
 
+-- Set vim wrap settings
 function M.vim_setup()
 	vim.opt_local.wrap = true
 	vim.opt_local.linebreak = true
 	vim.opt_local.breakindent = true
 end
 
+-- Init imporved moves
 function M.keymaps()
 	vim.keymap.set("n", "j", function()
 		return vim.v.count == 0 and "gj" or "j"
