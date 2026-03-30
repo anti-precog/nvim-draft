@@ -16,7 +16,7 @@ local function is_on_first_wrap_line()
 	if cursor_pos[1] ~= 1 then
 		return false
 	end
-	local cursor_screen_pos = vim.fn.screenpos(0, cursor_pos[1], cursor_pos[2])
+	local cursor_screen_pos = vim.fn.screenpos(0, cursor_pos[1], cursor_pos[2] + 1)
 	local first_symbol_pos = vim.fn.screenpos(0, 1, 1)
 
 	return cursor_screen_pos.row == first_symbol_pos.row
@@ -29,7 +29,7 @@ local function is_on_last_wrap_line()
 	if cursor_pos[1] ~= last_line_nr then
 		return false
 	end
-	local cursor_screen_pos = vim.fn.screenpos(0, last_line_nr, cursor_pos[2])
+	local cursor_screen_pos = vim.fn.screenpos(0, last_line_nr, cursor_pos[2] + 1)
 
 	local last_symbol_pos = vim.fn.screenpos(0, last_line_nr, vim.fn.col("$") - 1)
 	return cursor_screen_pos.row == last_symbol_pos.row

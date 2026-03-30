@@ -116,13 +116,13 @@ Defualt options:
 
 	-- Configuration for core module
 	core = {
-		move_by_visual_lines = true,
-		smart_quotes = true,
 		repleace_dash = "--",
+		smart_quotes = true,
+		move_by_visual_lines = true,
+		auto_turn_page = true,
 	},
 
 	-- Configuration for typography module
-	---@class TypographyConfig
 	typography = {
 		indent_size = 4,
 		center_header = false,
@@ -132,10 +132,6 @@ Defualt options:
 		comment_hl = "NonText",
 		header_hl = "Title",
 	},
-
-	-- Configuration for paginator module
-	paginator = false,
-
 }
 ```
 
