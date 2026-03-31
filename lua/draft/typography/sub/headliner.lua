@@ -11,7 +11,7 @@ end
 
 ---@return boolean is_header check if current line represent header
 local function is_header()
-	return selected_line.text:match("^[A-Z].*[^.]$")
+	return selected_line.text:match("^[A-Z].*[^.?:]$")
 end
 
 local function make_center()
