@@ -106,13 +106,19 @@ function M.commands()
 	})
 
 	vim.api.nvim_buf_create_user_command(0, "NextPage", function()
-		turn_page()
+		local choice = vim.fn.confirm("Page", "Next", 1)
+		if choice == 1 then
+			turn_page()
+		end
 	end, {
 		desc = "Go to next page",
 	})
 
 	vim.api.nvim_buf_create_user_command(0, "PrevPage", function()
-		return_page()
+		local choice = vim.fn.confirm("Page", "Prev", 1)
+		if choice == 1 then
+			return_page()
+		end
 	end, {
 		desc = "Go to prev page",
 	})
