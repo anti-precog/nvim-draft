@@ -13,8 +13,8 @@
 
 (MISSING) @missing
 
-;((end) @comment
-; (#set! conceal "")
-; (#set! conceal_lines ""))
+((tag) @comment
+ (#set! conceal "")
+ (#set! conceal_lines ""))
 
 
