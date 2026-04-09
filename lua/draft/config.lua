@@ -13,6 +13,7 @@ local defaults = {
 		smart_quotes = true,
 		move_by_visual_lines = true,
 		auto_turn_page = true,
+		skip_meta_lines = true,
 	},
 
 	-- Configuration for typography module
@@ -55,6 +56,7 @@ local function post_validate()
 			repleace_dash = { M.configuration.core.repleace_dash, { "string", "boolean" }, false },
 			repleace_ellipsis = { M.configuration.core.repleace_ellipsis, { "string", "boolean" }, false },
 			auto_turn_page = { M.configuration.core.auto_turn_page, "boolean", false },
+			skip_meta_lines = { M.configuration.core.skip_meta_lines, "boolean", false },
 		})
 	end
 

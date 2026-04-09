@@ -124,6 +124,7 @@ Defualt options:
 		smart_quotes = true,
 		move_by_visual_lines = true,
 		auto_turn_page = true,
+		skip_meta_lines = true, -- experimental
 	},
 
 	-- Configuration for typography module

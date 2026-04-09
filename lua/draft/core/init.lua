@@ -67,6 +67,17 @@ function M.setup()
 			for _, feature in ipairs(active_features) do
 				feature()
 			end
+
+			if core_config.skip_meta_lines then
+				local skipper = require("draft.core.skipper")
+				vim.api.nvim_create_autocmd({ "CursorMoved" }, {
+					group = group,
+					callback = function()
+						skipper.try_skip()
+					end,
+					desc = "load draft.core skipper",
+				})
+			end
 		end,
 		desc = "load draft.core improvements",
 	})
