@@ -1,6 +1,4 @@
 local global = require("draft.config")
---local typo_config = global.configuration.typography
-
 local selected_line = require("draft.typography.line")
 
 ---@return boolean is_group Is actual decorated line group head
@@ -8,7 +6,7 @@ local function is_group_head()
 	return selected_line.text:match("^[@].*")
 end
 
----@return boolean is_group Is actual decorated line group head
+---@return boolean is_group Is above decorated line group head
 local function is_group_head_above()
 	local row_id = selected_line.row_id
 	if row_id == 0 then
@@ -31,7 +29,7 @@ local function is_tag()
 end
 
 -- a submodule to highlight comments
----@deprecated Use nvim_treesitter_integration
+---@deprecated Use treesitter_integration
 ---@class HLComment
 local M = {}
 

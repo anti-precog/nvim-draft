@@ -1,6 +1,7 @@
 ---@alias NextStep boolean Continue or break next step
 
 local global = require("draft.config")
+local ts_config = global.configuration.treesitter_integration
 local selected_line = require("draft.typography.line")
 
 ---@type table<number, fun()> All implemented decoration steps
@@ -74,7 +75,9 @@ function M.init()
 	local typo_config = require("draft.config").configuration.typography
 
 	add_step(clear_decoration_for_selected_line)
-	add_step(require("draft.typography.sub.icons").try_set_icon)
+	if ts_config and ts_config.icons then
+		add_step(require("draft.typography.ts.icons").try_set_icon)
+	end
 	if typo_config.center_asterix then
 		add_step(require("draft.typography.sub.headliner").try_center_asterix)
 		add_post_CR_step(require("draft.typography.sub.headliner").try_recenter_asterix)

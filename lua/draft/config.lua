@@ -13,7 +13,6 @@ local defaults = {
 		smart_quotes = true,
 		move_by_visual_lines = true,
 		auto_turn_page = true,
-		skip_meta_lines = true,
 	},
 
 	-- Configuration for typography module
@@ -23,20 +22,23 @@ local defaults = {
 		center_asterix = true,
 		header_hl = false,
 
-		---@depracated Use nvim_treesitter_integration
+		---@depracated Use treesitter_integration
 		dialogue_hl = false,
-		---@depracated Use nvim_treesitter_integration
+		---@depracated Use treesitter_integration
 		quote_hl = false,
-		---@depracated Use nvim_treesitter_integration
+		---@depracated Use treesitter_integration
 		comment_hl = false,
 	},
 
-	nvim_treesitter_integration = true,
+	treesitter_integration = {
+		skip_meta_lines = false,
+		icons = true,
+	},
 }
 
 local function pre_validate(opts)
 	vim.validate({
-		nvim_treesittertegration = { opts.nvim_treesitter_integration, "boolean", true },
+		treesitter_integration = { opts.treesitter_integration, { "table", "boolean" }, true },
 		dash_symbol = {
 			opts.dash_symbol,
 			function(v)
@@ -63,7 +65,6 @@ local function post_validate()
 			repleace_dash = { M.configuration.core.repleace_dash, { "string", "boolean" }, false },
 			repleace_ellipsis = { M.configuration.core.repleace_ellipsis, { "string", "boolean" }, false },
 			auto_turn_page = { M.configuration.core.auto_turn_page, "boolean", false },
-			skip_meta_lines = { M.configuration.core.skip_meta_lines, "boolean", false },
 		})
 	end
 
@@ -76,6 +77,13 @@ local function post_validate()
 			quote_hl = { M.configuration.typography.quote_hl, { "string", "boolean" }, false },
 			comment_hl = { M.configuration.typography.comment_hl, { "string", "boolean" }, false },
 			header_hl = { M.configuration.typography.header_hl, { "string", "boolean" }, false },
+		})
+	end
+
+	if type(M.configuration.treesitter_integration) == "table" then
+		vim.validate({
+			skip_meta_lines = { M.configuration.treesitter_integration.skip_meta_lines, "boolean", false },
+			icons = { M.configuration.treesitter_integration.icons, "boolean", false },
 		})
 	end
 end

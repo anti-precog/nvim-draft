@@ -1,4 +1,5 @@
 local core_config = require("draft.config").configuration.core
+local ts_config = require("draft.config").configuration.treesitter_integration
 
 local active_features = {}
 
@@ -68,8 +69,8 @@ function M.setup()
 				feature()
 			end
 
-			if core_config.skip_meta_lines then
-				local skipper = require("draft.core.skipper")
+			if ts_config and ts_config.skip_meta_lines then
+				local skipper = require("draft.core.ts.skipper")
 				vim.api.nvim_create_autocmd({ "CursorMoved" }, {
 					group = group,
 					callback = function()
