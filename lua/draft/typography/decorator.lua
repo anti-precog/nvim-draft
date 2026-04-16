@@ -74,6 +74,7 @@ function M.init()
 	local typo_config = require("draft.config").configuration.typography
 
 	add_step(clear_decoration_for_selected_line)
+	add_step(require("draft.typography.sub.icons").try_set_icon)
 	if typo_config.center_asterix then
 		add_step(require("draft.typography.sub.headliner").try_center_asterix)
 		add_post_CR_step(require("draft.typography.sub.headliner").try_recenter_asterix)
